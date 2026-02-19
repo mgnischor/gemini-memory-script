@@ -115,12 +115,38 @@ GEMINI_API_KEY=your_api_key_here
 |---|---|
 | `google-genai` | Official Google Gen AI Python SDK |
 | `python-dotenv` | Loads environment variables from `.env` files |
+| `pdoc` | Generates HTML API documentation from docstrings |
 
 Install with:
 
 ```bash
-pip install google-genai python-dotenv
+pip install google-genai python-dotenv pdoc
 ```
+
+---
+
+## API Documentation Generation
+
+The project uses [pdoc](https://pdoc.dev) to produce HTML documentation automatically
+from the Google-style docstrings written in `src/run.py`.  pdoc requires zero
+configuration files and renders a clean, searchable HTML page for each module.
+
+### Generate docs — Windows
+
+```cmd
+generate_docs.cmd
+```
+
+### Generate docs — Linux / macOS
+
+```bash
+chmod +x generate_docs.sh
+./generate_docs.sh
+```
+
+Output is written to `docs/api/`.  Open `docs/api/run.html` in any browser to
+browse the full API reference including parameter descriptions, return types, and
+error conditions for every function.
 
 ---
 
