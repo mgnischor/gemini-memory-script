@@ -11,6 +11,7 @@ from google.genai.errors import ClientError
 BASE_DIR = Path(__file__).resolve().parent.parent
 DATABASE_DIR = BASE_DIR / "database"
 DATABASE_PATH = DATABASE_DIR / "chat_history.db"
+EXPORTS_DIR = BASE_DIR / "exports"
 ENV_PATH = BASE_DIR / ".env"
 
 
@@ -156,6 +157,73 @@ def get_session_history(session_id: str) -> list[dict]:
     return [dict(row) for row in rows]
 
 
+def get_all_sessions() -> list[dict]:
+    """Retrieve all sessions stored in the database ordered by creation time.
+
+    Returns:
+        A list of dictionaries, each containing the keys ``id`` and
+        ``created_at`` for one session, ordered oldest-first.
+    """
+    with get_connection() as connection:
+        rows = connection.execute(
+            "SELECT id, created_at FROM sessions ORDER BY created_at ASC"
+        ).fetchall()
+    return [dict(row) for row in rows]
+
+
+def export_database_to_markdown() -> Path:
+    """Export the entire chat database to a Markdown file.
+
+    Iterates over every session and its messages, formats them as a readable
+    Markdown document, and writes the result to a timestamped file inside the
+    ``exports/`` directory at the project root.  The directory is created
+    automatically if it does not exist.
+
+    The output file is named ``export_<UTC-timestamp>.md`` where the timestamp
+    uses the format ``YYYYMMDD_HHMMSS`` so files sort chronologically by name.
+
+    Returns:
+        The ``pathlib.Path`` of the generated Markdown file.
+    """
+    EXPORTS_DIR.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
+    output_path = EXPORTS_DIR / f"export_{timestamp}.md"
+
+    sessions = get_all_sessions()
+    lines: list[str] = [
+        "# Gemini Chat — Database Export",
+        f"",
+        f"**Generated:** {datetime.now(timezone.utc).isoformat()}",
+        f"**Total sessions:** {len(sessions)}",
+        "",
+        "---",
+        "",
+    ]
+
+    for session in sessions:
+        lines.append(f"## Session: `{session['id']}`")
+        lines.append(f"")
+        lines.append(f"**Created:** {session['created_at']}")
+        lines.append("")
+
+        messages = get_session_history(session["id"])
+        if not messages:
+            lines.append("_No messages in this session._")
+        else:
+            for msg in messages:
+                author = "**You**" if msg["role"] == "user" else "**Gemini**"
+                lines.append(f"{author} _{msg['created_at']}_")
+                lines.append("")
+                lines.append(msg["content"])
+                lines.append("")
+
+        lines.append("---")
+        lines.append("")
+
+    output_path.write_text("\n".join(lines), encoding="utf-8")
+    return output_path
+
+
 def build_gemini_history(session_id: str) -> list[dict]:
     """Convert stored messages into the history format required by the Gemini SDK.
 
@@ -202,6 +270,7 @@ def print_banner() -> None:
     print("Type your message and press Enter to chat.")
     print("Type 'exit' or 'quit' to end the session.")
     print("Type 'history' to view the current session history.")
+    print("Type '/export' to export the full database to Markdown.")
     print("=" * 60)
 
 
@@ -245,6 +314,12 @@ def run_chat(chat: genai.chats.Chat, session_id: str) -> None:
     The loop terminates when the user types ``exit`` or ``quit``, or when a
     ``KeyboardInterrupt`` / ``EOFError`` is raised (e.g. Ctrl+C or Ctrl+D).
 
+    Built-in commands:
+        - ``exit`` / ``quit``: end the session gracefully.
+        - ``history``: print all messages in the current session.
+        - ``/export``: export the full database to a Markdown file in
+          the ``exports/`` directory.
+
     Args:
         chat: An active ``genai.chats.Chat`` session.
         session_id: The UUID of the current session, used to persist messages.
@@ -265,6 +340,14 @@ def run_chat(chat: genai.chats.Chat, session_id: str) -> None:
 
         if user_input.lower() == "history":
             print_history(session_id)
+            continue
+
+        if user_input.lower() == "/export":
+            try:
+                output_path = export_database_to_markdown()
+                print(f"\nDatabase exported to: {output_path}")
+            except Exception as error:
+                print(f"\nFailed to export database: {error}")
             continue
 
         save_message(session_id, "user", user_input)
