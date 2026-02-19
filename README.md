@@ -33,7 +33,7 @@ cd gemini-memory-script
 2. Install the required Python packages:
 
 ```bash
-pip install google-genai python-dotenv
+pip install google-genai python-dotenv pdoc
 ```
 
 3. Create a `.env` file in the project root with your API key:
@@ -87,12 +87,36 @@ gemini-memory-script/
 ├── database/               # Created automatically at runtime
 │   └── chat_history.db     # SQLite database
 ├── docs/
+│   ├── api/                # Generated HTML docs (pdoc)
 │   └── documentation.md    # Technical documentation
 ├── .env                    # API key (not committed to git)
+├── generate_docs.cmd       # Windows docs generator
+├── generate_docs.sh        # Linux/macOS docs generator
 ├── run.cmd                 # Windows launcher
 ├── run.sh                  # Linux/macOS launcher
 └── README.md
 ```
+
+---
+
+## Generating API Documentation
+
+This project uses [pdoc](https://pdoc.dev) to generate HTML documentation directly from the source code docstrings.
+
+### Windows
+
+```cmd
+generate_docs.cmd
+```
+
+### Linux / macOS
+
+```bash
+chmod +x generate_docs.sh
+./generate_docs.sh
+```
+
+The output will be written to `docs/api/`. Open `docs/api/run.html` in a browser to browse the full API reference.
 
 ---
 
