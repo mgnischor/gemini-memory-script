@@ -907,6 +907,14 @@ window.pdocSearch = (function () {
                     doc: "<p></p>\n",
                     default_value: "WindowsPath(&#x27;C:/GITHUB/gemini-memory-script/database/chat_history.db&#x27;)",
                 },
+                "run.EXPORTS_DIR": {
+                    fullname: "run.EXPORTS_DIR",
+                    modulename: "run",
+                    qualname: "EXPORTS_DIR",
+                    kind: "variable",
+                    doc: "<p></p>\n",
+                    default_value: "WindowsPath(&#x27;C:/GITHUB/gemini-memory-script/exports&#x27;)",
+                },
                 "run.ENV_PATH": {
                     fullname: "run.ENV_PATH",
                     modulename: "run",
@@ -985,6 +993,26 @@ window.pdocSearch = (function () {
                         '<span class="signature pdoc-code condensed">(<span class="param"><span class="n">session_id</span><span class="p">:</span> <span class="nb">str</span></span><span class="return-annotation">) -> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span>:</span></span>',
                     funcdef: "def",
                 },
+                "run.get_all_sessions": {
+                    fullname: "run.get_all_sessions",
+                    modulename: "run",
+                    qualname: "get_all_sessions",
+                    kind: "function",
+                    doc: "<p>Retrieve all sessions stored in the database ordered by creation time.</p>\n\n<p>Returns:\n    A list of dictionaries, each containing the keys <code>id</code> and\n    <code>created_at</code> for one session, ordered oldest-first.</p>\n",
+                    signature:
+                        '<span class="signature pdoc-code condensed">(<span class="return-annotation">) -> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span>:</span></span>',
+                    funcdef: "def",
+                },
+                "run.export_database_to_markdown": {
+                    fullname: "run.export_database_to_markdown",
+                    modulename: "run",
+                    qualname: "export_database_to_markdown",
+                    kind: "function",
+                    doc: "<p>Export the entire chat database to a Markdown file.</p>\n\n<p>Iterates over every session and its messages, formats them as a readable\nMarkdown document, and writes the result to a timestamped file inside the\n<code>exports/</code> directory at the project root.  The directory is created\nautomatically if it does not exist.</p>\n\n<p>The output file is named <code>export_&lt;UTC-timestamp&gt;.md</code> where the timestamp\nuses the format <code>YYYYMMDD_HHMMSS</code> so files sort chronologically by name.</p>\n\n<p>Returns:\n    The <code>pathlib.Path</code> of the generated Markdown file.</p>\n",
+                    signature:
+                        '<span class="signature pdoc-code condensed">(<span class="return-annotation">) -> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span>:</span></span>',
+                    funcdef: "def",
+                },
                 "run.build_gemini_history": {
                     fullname: "run.build_gemini_history",
                     modulename: "run",
@@ -1030,7 +1058,7 @@ window.pdocSearch = (function () {
                     modulename: "run",
                     qualname: "run_chat",
                     kind: "function",
-                    doc: "<p>Run the interactive chat loop until the user exits.</p>\n\n<p>Reads user input from stdin in a continuous loop, handles built-in\ncommands (<code>exit</code>, <code>quit</code>, <code>history</code>), persists every user message\nbefore sending it to the Gemini API, persists every model reply after\nreceiving it, and prints the reply to stdout.</p>\n\n<p>Error handling per message:\n    - HTTP 429 (ResourceExhausted / quota exceeded): prints a friendly\n      rate-limit message and allows the user to retry.\n    - Other <code>ClientError</code> subclasses: prints the raw error and continues.\n    - Any unexpected exception: prints the error and continues so a single\n      failure does not terminate the entire session.</p>\n\n<p>The loop terminates when the user types <code>exit</code> or <code>quit</code>, or when a\n<code>KeyboardInterrupt</code> / <code>EOFError</code> is raised (e.g. Ctrl+C or Ctrl+D).</p>\n\n<p>Args:\n    chat: An active <code>genai.chats.Chat</code> session.\n    session_id: The UUID of the current session, used to persist messages.</p>\n",
+                    doc: "<p>Run the interactive chat loop until the user exits.</p>\n\n<p>Reads user input from stdin in a continuous loop, handles built-in\ncommands (<code>exit</code>, <code>quit</code>, <code>history</code>), persists every user message\nbefore sending it to the Gemini API, persists every model reply after\nreceiving it, and prints the reply to stdout.</p>\n\n<p>Error handling per message:\n    - HTTP 429 (ResourceExhausted / quota exceeded): prints a friendly\n      rate-limit message and allows the user to retry.\n    - Other <code>ClientError</code> subclasses: prints the raw error and continues.\n    - Any unexpected exception: prints the error and continues so a single\n      failure does not terminate the entire session.</p>\n\n<p>The loop terminates when the user types <code>exit</code> or <code>quit</code>, or when a\n<code>KeyboardInterrupt</code> / <code>EOFError</code> is raised (e.g. Ctrl+C or Ctrl+D).</p>\n\n<p>Built-in commands:\n    - <code>exit</code> / <code>quit</code>: end the session gracefully.\n    - <code>history</code>: print all messages in the current session.\n    - <code>/export</code>: export the full database to a Markdown file in\n      the <code>exports/</code> directory.</p>\n\n<p>Args:\n    chat: An active <code>genai.chats.Chat</code> session.\n    session_id: The UUID of the current session, used to persist messages.</p>\n",
                     signature:
                         '<span class="signature pdoc-code condensed">(<span class="param"><span class="n">chat</span><span class="p">:</span> <span class="n">google</span><span class="o">.</span><span class="n">genai</span><span class="o">.</span><span class="n">chats</span><span class="o">.</span><span class="n">Chat</span>, </span><span class="param"><span class="n">session_id</span><span class="p">:</span> <span class="nb">str</span></span><span class="return-annotation">) -> <span class="kc">None</span>:</span></span>',
                     funcdef: "def",
@@ -1071,6 +1099,15 @@ window.pdocSearch = (function () {
                     fullname: 3,
                     annotation: 0,
                     default_value: 9,
+                    signature: 0,
+                    bases: 0,
+                    doc: 3,
+                },
+                "run.EXPORTS_DIR": {
+                    qualname: 2,
+                    fullname: 3,
+                    annotation: 0,
+                    default_value: 7,
                     signature: 0,
                     bases: 0,
                     doc: 3,
@@ -1147,6 +1184,24 @@ window.pdocSearch = (function () {
                     bases: 0,
                     doc: 89,
                 },
+                "run.get_all_sessions": {
+                    qualname: 3,
+                    fullname: 4,
+                    annotation: 0,
+                    default_value: 0,
+                    signature: 16,
+                    bases: 0,
+                    doc: 40,
+                },
+                "run.export_database_to_markdown": {
+                    qualname: 4,
+                    fullname: 5,
+                    annotation: 0,
+                    default_value: 0,
+                    signature: 15,
+                    bases: 0,
+                    doc: 103,
+                },
                 "run.build_gemini_history": {
                     qualname: 3,
                     fullname: 4,
@@ -1190,7 +1245,7 @@ window.pdocSearch = (function () {
                     default_value: 0,
                     signature: 45,
                     bases: 0,
-                    doc: 175,
+                    doc: 219,
                 },
                 "run.main": {
                     qualname: 1,
@@ -1202,7 +1257,7 @@ window.pdocSearch = (function () {
                     doc: 90,
                 },
             },
-            length: 18,
+            length: 21,
             save: true,
         },
         index: {
@@ -1244,8 +1299,12 @@ window.pdocSearch = (function () {
                             docs: {},
                             df: 0,
                             r: {
-                                docs: { "run.BASE_DIR": { tf: 1 }, "run.DATABASE_DIR": { tf: 1 } },
-                                df: 2,
+                                docs: {
+                                    "run.BASE_DIR": { tf: 1 },
+                                    "run.DATABASE_DIR": { tf: 1 },
+                                    "run.EXPORTS_DIR": { tf: 1 },
+                                },
+                                df: 3,
                                 e: {
                                     docs: {},
                                     df: 0,
@@ -1293,8 +1352,9 @@ window.pdocSearch = (function () {
                                                         "run.DATABASE_PATH": { tf: 1 },
                                                         "run.ensure_database_directory": { tf: 1 },
                                                         "run.initialize_database": { tf: 1 },
+                                                        "run.export_database_to_markdown": { tf: 1 },
                                                     },
-                                                    df: 4,
+                                                    df: 5,
                                                 },
                                             },
                                         },
@@ -1335,6 +1395,27 @@ window.pdocSearch = (function () {
                     e: {
                         docs: {},
                         df: 0,
+                        x: {
+                            docs: {},
+                            df: 0,
+                            p: {
+                                docs: {},
+                                df: 0,
+                                o: {
+                                    docs: {},
+                                    df: 0,
+                                    r: {
+                                        docs: {},
+                                        df: 0,
+                                        t: {
+                                            docs: { "run.export_database_to_markdown": { tf: 1 } },
+                                            df: 1,
+                                            s: { docs: { "run.EXPORTS_DIR": { tf: 1 } }, df: 1 },
+                                        },
+                                    },
+                                },
+                            },
+                        },
                         n: {
                             docs: {},
                             df: 0,
@@ -1367,6 +1448,7 @@ window.pdocSearch = (function () {
                         docs: {},
                         df: 0,
                         p: { docs: {}, df: 0, i: { docs: { "run.load_api_key": { tf: 1 } }, df: 1 } },
+                        l: { docs: {}, df: 0, l: { docs: { "run.get_all_sessions": { tf: 1 } }, df: 1 } },
                     },
                     k: {
                         docs: {},
@@ -1380,8 +1462,12 @@ window.pdocSearch = (function () {
                             docs: {},
                             df: 0,
                             t: {
-                                docs: { "run.get_connection": { tf: 1 }, "run.get_session_history": { tf: 1 } },
-                                df: 2,
+                                docs: {
+                                    "run.get_connection": { tf: 1 },
+                                    "run.get_session_history": { tf: 1 },
+                                    "run.get_all_sessions": { tf: 1 },
+                                },
+                                df: 3,
                             },
                             m: {
                                 docs: {},
@@ -1519,6 +1605,7 @@ window.pdocSearch = (function () {
                                                     "run.start_chat_session": { tf: 1 },
                                                 },
                                                 df: 3,
+                                                s: { docs: { "run.get_all_sessions": { tf: 1 } }, df: 1 },
                                             },
                                         },
                                     },
@@ -1560,7 +1647,32 @@ window.pdocSearch = (function () {
                                 },
                             },
                         },
-                        a: { docs: {}, df: 0, i: { docs: {}, df: 0, n: { docs: { "run.main": { tf: 1 } }, df: 1 } } },
+                        a: {
+                            docs: {},
+                            df: 0,
+                            r: {
+                                docs: {},
+                                df: 0,
+                                k: {
+                                    docs: {},
+                                    df: 0,
+                                    d: {
+                                        docs: {},
+                                        df: 0,
+                                        o: {
+                                            docs: {},
+                                            df: 0,
+                                            w: {
+                                                docs: {},
+                                                df: 0,
+                                                n: { docs: { "run.export_database_to_markdown": { tf: 1 } }, df: 1 },
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                            i: { docs: {}, df: 0, n: { docs: { "run.main": { tf: 1 } }, df: 1 } },
+                        },
                     },
                     h: {
                         docs: {},
@@ -1594,6 +1706,7 @@ window.pdocSearch = (function () {
                             },
                         },
                     },
+                    t: { docs: {}, df: 0, o: { docs: { "run.export_database_to_markdown": { tf: 1 } }, df: 1 } },
                     r: { docs: {}, df: 0, u: { docs: {}, df: 0, n: { docs: { "run.run_chat": { tf: 1 } }, df: 1 } } },
                 },
             },
@@ -1613,6 +1726,7 @@ window.pdocSearch = (function () {
                                     "run.BASE_DIR": { tf: 1 },
                                     "run.DATABASE_DIR": { tf: 1 },
                                     "run.DATABASE_PATH": { tf: 1 },
+                                    "run.EXPORTS_DIR": { tf: 1 },
                                     "run.ENV_PATH": { tf: 1 },
                                     "run.load_api_key": { tf: 1 },
                                     "run.ensure_database_directory": { tf: 1 },
@@ -1621,6 +1735,8 @@ window.pdocSearch = (function () {
                                     "run.create_session": { tf: 1 },
                                     "run.save_message": { tf: 1 },
                                     "run.get_session_history": { tf: 1 },
+                                    "run.get_all_sessions": { tf: 1 },
+                                    "run.export_database_to_markdown": { tf: 1 },
                                     "run.build_gemini_history": { tf: 1 },
                                     "run.start_chat_session": { tf: 1 },
                                     "run.print_banner": { tf: 1 },
@@ -1628,7 +1744,7 @@ window.pdocSearch = (function () {
                                     "run.run_chat": { tf: 1.4142135623730951 },
                                     "run.main": { tf: 1 },
                                 },
-                                df: 18,
+                                df: 21,
                             },
                         },
                     },
@@ -1666,8 +1782,12 @@ window.pdocSearch = (function () {
                             docs: {},
                             df: 0,
                             r: {
-                                docs: { "run.BASE_DIR": { tf: 1 }, "run.DATABASE_DIR": { tf: 1 } },
-                                df: 2,
+                                docs: {
+                                    "run.BASE_DIR": { tf: 1 },
+                                    "run.DATABASE_DIR": { tf: 1 },
+                                    "run.EXPORTS_DIR": { tf: 1 },
+                                },
+                                df: 3,
                                 e: {
                                     docs: {},
                                     df: 0,
@@ -1715,8 +1835,9 @@ window.pdocSearch = (function () {
                                                         "run.DATABASE_PATH": { tf: 1 },
                                                         "run.ensure_database_directory": { tf: 1 },
                                                         "run.initialize_database": { tf: 1 },
+                                                        "run.export_database_to_markdown": { tf: 1 },
                                                     },
-                                                    df: 4,
+                                                    df: 5,
                                                 },
                                             },
                                         },
@@ -1757,6 +1878,27 @@ window.pdocSearch = (function () {
                     e: {
                         docs: {},
                         df: 0,
+                        x: {
+                            docs: {},
+                            df: 0,
+                            p: {
+                                docs: {},
+                                df: 0,
+                                o: {
+                                    docs: {},
+                                    df: 0,
+                                    r: {
+                                        docs: {},
+                                        df: 0,
+                                        t: {
+                                            docs: { "run.export_database_to_markdown": { tf: 1 } },
+                                            df: 1,
+                                            s: { docs: { "run.EXPORTS_DIR": { tf: 1 } }, df: 1 },
+                                        },
+                                    },
+                                },
+                            },
+                        },
                         n: {
                             docs: {},
                             df: 0,
@@ -1789,6 +1931,7 @@ window.pdocSearch = (function () {
                         docs: {},
                         df: 0,
                         p: { docs: {}, df: 0, i: { docs: { "run.load_api_key": { tf: 1 } }, df: 1 } },
+                        l: { docs: {}, df: 0, l: { docs: { "run.get_all_sessions": { tf: 1 } }, df: 1 } },
                     },
                     k: {
                         docs: {},
@@ -1802,8 +1945,12 @@ window.pdocSearch = (function () {
                             docs: {},
                             df: 0,
                             t: {
-                                docs: { "run.get_connection": { tf: 1 }, "run.get_session_history": { tf: 1 } },
-                                df: 2,
+                                docs: {
+                                    "run.get_connection": { tf: 1 },
+                                    "run.get_session_history": { tf: 1 },
+                                    "run.get_all_sessions": { tf: 1 },
+                                },
+                                df: 3,
                             },
                             m: {
                                 docs: {},
@@ -1941,6 +2088,7 @@ window.pdocSearch = (function () {
                                                     "run.start_chat_session": { tf: 1 },
                                                 },
                                                 df: 3,
+                                                s: { docs: { "run.get_all_sessions": { tf: 1 } }, df: 1 },
                                             },
                                         },
                                     },
@@ -1982,7 +2130,32 @@ window.pdocSearch = (function () {
                                 },
                             },
                         },
-                        a: { docs: {}, df: 0, i: { docs: {}, df: 0, n: { docs: { "run.main": { tf: 1 } }, df: 1 } } },
+                        a: {
+                            docs: {},
+                            df: 0,
+                            r: {
+                                docs: {},
+                                df: 0,
+                                k: {
+                                    docs: {},
+                                    df: 0,
+                                    d: {
+                                        docs: {},
+                                        df: 0,
+                                        o: {
+                                            docs: {},
+                                            df: 0,
+                                            w: {
+                                                docs: {},
+                                                df: 0,
+                                                n: { docs: { "run.export_database_to_markdown": { tf: 1 } }, df: 1 },
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                            i: { docs: {}, df: 0, n: { docs: { "run.main": { tf: 1 } }, df: 1 } },
+                        },
                     },
                     h: {
                         docs: {},
@@ -2016,6 +2189,7 @@ window.pdocSearch = (function () {
                             },
                         },
                     },
+                    t: { docs: {}, df: 0, o: { docs: { "run.export_database_to_markdown": { tf: 1 } }, df: 1 } },
                 },
             },
             annotation: { root: { docs: {}, df: 0 } },
@@ -2025,9 +2199,10 @@ window.pdocSearch = (function () {
                         "run.BASE_DIR": { tf: 1 },
                         "run.DATABASE_DIR": { tf: 1 },
                         "run.DATABASE_PATH": { tf: 1 },
+                        "run.EXPORTS_DIR": { tf: 1 },
                         "run.ENV_PATH": { tf: 1 },
                     },
-                    df: 4,
+                    df: 5,
                     w: {
                         docs: {},
                         df: 0,
@@ -2063,9 +2238,10 @@ window.pdocSearch = (function () {
                                                                     "run.BASE_DIR": { tf: 1 },
                                                                     "run.DATABASE_DIR": { tf: 1 },
                                                                     "run.DATABASE_PATH": { tf: 1 },
+                                                                    "run.EXPORTS_DIR": { tf: 1 },
                                                                     "run.ENV_PATH": { tf: 1 },
                                                                 },
-                                                                df: 4,
+                                                                df: 5,
                                                             },
                                                         },
                                                     },
@@ -2084,9 +2260,10 @@ window.pdocSearch = (function () {
                                     "run.BASE_DIR": { tf: 1.4142135623730951 },
                                     "run.DATABASE_DIR": { tf: 1.4142135623730951 },
                                     "run.DATABASE_PATH": { tf: 1.4142135623730951 },
+                                    "run.EXPORTS_DIR": { tf: 1.4142135623730951 },
                                     "run.ENV_PATH": { tf: 1.4142135623730951 },
                                 },
-                                df: 4,
+                                df: 5,
                             },
                             docs: {},
                             df: 0,
@@ -2144,9 +2321,10 @@ window.pdocSearch = (function () {
                                                                                         "run.BASE_DIR": { tf: 1 },
                                                                                         "run.DATABASE_DIR": { tf: 1 },
                                                                                         "run.DATABASE_PATH": { tf: 1 },
+                                                                                        "run.EXPORTS_DIR": { tf: 1 },
                                                                                         "run.ENV_PATH": { tf: 1 },
                                                                                     },
-                                                                                    df: 4,
+                                                                                    df: 5,
                                                                                 },
                                                                             },
                                                                         },
@@ -2183,9 +2361,10 @@ window.pdocSearch = (function () {
                                                 "run.BASE_DIR": { tf: 1 },
                                                 "run.DATABASE_DIR": { tf: 1 },
                                                 "run.DATABASE_PATH": { tf: 1 },
+                                                "run.EXPORTS_DIR": { tf: 1 },
                                                 "run.ENV_PATH": { tf: 1 },
                                             },
-                                            df: 4,
+                                            df: 5,
                                         },
                                     },
                                 },
@@ -2268,6 +2447,34 @@ window.pdocSearch = (function () {
                                                         },
                                                     },
                                                 },
+                                                e: {
+                                                    docs: {},
+                                                    df: 0,
+                                                    x: {
+                                                        docs: {},
+                                                        df: 0,
+                                                        p: {
+                                                            docs: {},
+                                                            df: 0,
+                                                            o: {
+                                                                docs: {},
+                                                                df: 0,
+                                                                r: {
+                                                                    docs: {},
+                                                                    df: 0,
+                                                                    t: {
+                                                                        docs: {},
+                                                                        df: 0,
+                                                                        s: {
+                                                                            docs: { "run.EXPORTS_DIR": { tf: 1 } },
+                                                                            df: 1,
+                                                                        },
+                                                                    },
+                                                                },
+                                                            },
+                                                        },
+                                                    },
+                                                },
                                             },
                                         },
                                     },
@@ -2310,6 +2517,8 @@ window.pdocSearch = (function () {
                         "run.create_session": { tf: 3 },
                         "run.save_message": { tf: 5.656854249492381 },
                         "run.get_session_history": { tf: 4.58257569495584 },
+                        "run.get_all_sessions": { tf: 3.7416573867739413 },
+                        "run.export_database_to_markdown": { tf: 3.605551275463989 },
                         "run.build_gemini_history": { tf: 4.58257569495584 },
                         "run.start_chat_session": { tf: 7.0710678118654755 },
                         "run.print_banner": { tf: 3 },
@@ -2317,7 +2526,7 @@ window.pdocSearch = (function () {
                         "run.run_chat": { tf: 6 },
                         "run.main": { tf: 3 },
                     },
-                    df: 13,
+                    df: 15,
                     s: {
                         docs: {},
                         df: 0,
@@ -2529,9 +2738,10 @@ window.pdocSearch = (function () {
                                 t: {
                                     docs: {
                                         "run.get_session_history": { tf: 1 },
+                                        "run.get_all_sessions": { tf: 1 },
                                         "run.build_gemini_history": { tf: 1 },
                                     },
-                                    df: 2,
+                                    df: 3,
                                 },
                             },
                         },
@@ -2548,9 +2758,35 @@ window.pdocSearch = (function () {
                                 t: {
                                     docs: {
                                         "run.get_session_history": { tf: 1 },
+                                        "run.get_all_sessions": { tf: 1 },
                                         "run.build_gemini_history": { tf: 1 },
                                     },
-                                    df: 2,
+                                    df: 3,
+                                },
+                            },
+                        },
+                    },
+                    p: {
+                        docs: {},
+                        df: 0,
+                        a: {
+                            docs: {},
+                            df: 0,
+                            t: {
+                                docs: {},
+                                df: 0,
+                                h: {
+                                    docs: { "run.export_database_to_markdown": { tf: 1 } },
+                                    df: 1,
+                                    l: {
+                                        docs: {},
+                                        df: 0,
+                                        i: {
+                                            docs: {},
+                                            df: 0,
+                                            b: { docs: { "run.export_database_to_markdown": { tf: 1 } }, df: 1 },
+                                        },
+                                    },
                                 },
                             },
                         },
@@ -2621,6 +2857,7 @@ window.pdocSearch = (function () {
                         "run.BASE_DIR": { tf: 1.7320508075688772 },
                         "run.DATABASE_DIR": { tf: 1.7320508075688772 },
                         "run.DATABASE_PATH": { tf: 1.7320508075688772 },
+                        "run.EXPORTS_DIR": { tf: 1.7320508075688772 },
                         "run.ENV_PATH": { tf: 1.7320508075688772 },
                         "run.load_api_key": { tf: 3.4641016151377544 },
                         "run.ensure_database_directory": { tf: 2.449489742783178 },
@@ -2629,14 +2866,16 @@ window.pdocSearch = (function () {
                         "run.create_session": { tf: 3 },
                         "run.save_message": { tf: 4.123105625617661 },
                         "run.get_session_history": { tf: 4.242640687119285 },
+                        "run.get_all_sessions": { tf: 3.1622776601683795 },
+                        "run.export_database_to_markdown": { tf: 4.47213595499958 },
                         "run.build_gemini_history": { tf: 4.58257569495584 },
                         "run.start_chat_session": { tf: 4 },
                         "run.print_banner": { tf: 1.7320508075688772 },
                         "run.print_history": { tf: 3.605551275463989 },
-                        "run.run_chat": { tf: 6 },
+                        "run.run_chat": { tf: 7.0710678118654755 },
                         "run.main": { tf: 5.477225575051661 },
                     },
-                    df: 18,
+                    df: 21,
                     l: {
                         docs: {},
                         df: 0,
@@ -2704,10 +2943,11 @@ window.pdocSearch = (function () {
                                 t: {
                                     docs: {
                                         "run.get_session_history": { tf: 1 },
+                                        "run.get_all_sessions": { tf: 1 },
                                         "run.build_gemini_history": { tf: 1.7320508075688772 },
                                         "run.print_banner": { tf: 1 },
                                     },
-                                    df: 3,
+                                    df: 4,
                                 },
                             },
                             m: {
@@ -2716,6 +2956,7 @@ window.pdocSearch = (function () {
                                 i: { docs: {}, df: 0, t: { docs: { "run.run_chat": { tf: 1 } }, df: 1 } },
                             },
                         },
+                        t: { docs: { "run.export_database_to_markdown": { tf: 1 } }, df: 1 },
                         a: {
                             docs: {},
                             df: 0,
@@ -2741,15 +2982,18 @@ window.pdocSearch = (function () {
                                     "run.create_session": { tf: 2.23606797749979 },
                                     "run.save_message": { tf: 3.872983346207417 },
                                     "run.get_session_history": { tf: 2.6457513110645907 },
+                                    "run.get_all_sessions": { tf: 1.4142135623730951 },
+                                    "run.export_database_to_markdown": { tf: 3.1622776601683795 },
                                     "run.build_gemini_history": { tf: 2.449489742783178 },
                                     "run.start_chat_session": { tf: 3 },
                                     "run.print_banner": { tf: 1 },
                                     "run.print_history": { tf: 2.23606797749979 },
-                                    "run.run_chat": { tf: 3.4641016151377544 },
+                                    "run.run_chat": { tf: 4 },
                                     "run.main": { tf: 3 },
                                 },
-                                df: 13,
+                                df: 15,
                                 n: { docs: { "run.load_api_key": { tf: 1 } }, df: 1 },
+                                m: { docs: { "run.export_database_to_markdown": { tf: 1 } }, df: 1 },
                             },
                             a: {
                                 docs: {},
@@ -2817,12 +3061,13 @@ window.pdocSearch = (function () {
                                 "run.initialize_database": { tf: 1.7320508075688772 },
                                 "run.create_session": { tf: 1 },
                                 "run.save_message": { tf: 2 },
+                                "run.export_database_to_markdown": { tf: 1.4142135623730951 },
                                 "run.build_gemini_history": { tf: 1.4142135623730951 },
                                 "run.start_chat_session": { tf: 1.7320508075688772 },
                                 "run.print_history": { tf: 1 },
-                                "run.run_chat": { tf: 2 },
+                                "run.run_chat": { tf: 2.23606797749979 },
                             },
-                            df: 9,
+                            df: 10,
                         },
                         i: {
                             docs: {},
@@ -2835,8 +3080,9 @@ window.pdocSearch = (function () {
                                         "run.create_session": { tf: 1 },
                                         "run.save_message": { tf: 1 },
                                         "run.get_session_history": { tf: 1 },
+                                        "run.get_all_sessions": { tf: 1 },
                                     },
-                                    df: 3,
+                                    df: 4,
                                     s: {
                                         docs: { "run.ensure_database_directory": { tf: 1 } },
                                         df: 1,
@@ -2853,9 +3099,20 @@ window.pdocSearch = (function () {
                                                         docs: {
                                                             "run.create_session": { tf: 1 },
                                                             "run.save_message": { tf: 1 },
+                                                            "run.export_database_to_markdown": {
+                                                                tf: 1.4142135623730951,
+                                                            },
                                                             "run.print_history": { tf: 1 },
                                                         },
-                                                        df: 3,
+                                                        df: 4,
+                                                        e: {
+                                                            docs: {},
+                                                            df: 0,
+                                                            d: {
+                                                                docs: { "run.export_database_to_markdown": { tf: 1 } },
+                                                                df: 1,
+                                                            },
+                                                        },
                                                     },
                                                 },
                                             },
@@ -2994,6 +3251,10 @@ window.pdocSearch = (function () {
                                                     docs: {},
                                                     df: 0,
                                                     s: { docs: { "run.create_session": { tf: 1 } }, df: 1 },
+                                                    d: {
+                                                        docs: { "run.export_database_to_markdown": { tf: 1 } },
+                                                        df: 1,
+                                                    },
                                                 },
                                                 i: {
                                                     docs: {},
@@ -3037,6 +3298,40 @@ window.pdocSearch = (function () {
                                 },
                             },
                         },
+                        t: { docs: { "run.export_database_to_markdown": { tf: 1 } }, df: 1 },
+                        r: {
+                            docs: {},
+                            df: 0,
+                            a: {
+                                docs: {},
+                                df: 0,
+                                c: {
+                                    docs: {},
+                                    df: 0,
+                                    e: {
+                                        docs: {},
+                                        df: 0,
+                                        f: {
+                                            docs: {},
+                                            df: 0,
+                                            u: {
+                                                docs: {},
+                                                df: 0,
+                                                l: {
+                                                    docs: {},
+                                                    df: 0,
+                                                    l: {
+                                                        docs: {},
+                                                        df: 0,
+                                                        y: { docs: { "run.run_chat": { tf: 1 } }, df: 1 },
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        },
                     },
                     a: {
                         docs: {
@@ -3045,13 +3340,15 @@ window.pdocSearch = (function () {
                             "run.create_session": { tf: 1.7320508075688772 },
                             "run.save_message": { tf: 1.4142135623730951 },
                             "run.get_session_history": { tf: 1.4142135623730951 },
+                            "run.get_all_sessions": { tf: 1 },
+                            "run.export_database_to_markdown": { tf: 1.7320508075688772 },
                             "run.build_gemini_history": { tf: 2.23606797749979 },
                             "run.start_chat_session": { tf: 1.4142135623730951 },
                             "run.print_history": { tf: 1.4142135623730951 },
-                            "run.run_chat": { tf: 2 },
+                            "run.run_chat": { tf: 2.23606797749979 },
                             "run.main": { tf: 1.4142135623730951 },
                         },
-                        df: 10,
+                        df: 12,
                         p: {
                             docs: {},
                             df: 0,
@@ -3110,8 +3407,10 @@ window.pdocSearch = (function () {
                                 "run.load_api_key": { tf: 1 },
                                 "run.get_connection": { tf: 1 },
                                 "run.get_session_history": { tf: 1 },
+                                "run.get_all_sessions": { tf: 1 },
+                                "run.export_database_to_markdown": { tf: 1 },
                             },
-                            df: 3,
+                            df: 5,
                             t: {
                                 docs: {},
                                 df: 0,
@@ -3176,8 +3475,13 @@ window.pdocSearch = (function () {
                                 },
                             },
                             l: {
-                                docs: { "run.get_session_history": { tf: 1 }, "run.print_history": { tf: 1 } },
-                                df: 2,
+                                docs: {
+                                    "run.get_session_history": { tf: 1 },
+                                    "run.get_all_sessions": { tf: 1 },
+                                    "run.print_history": { tf: 1 },
+                                    "run.run_chat": { tf: 1 },
+                                },
+                                df: 4,
                                 o: {
                                     docs: {},
                                     df: 0,
@@ -3199,6 +3503,8 @@ window.pdocSearch = (function () {
                                     "run.create_session": { tf: 1 },
                                     "run.save_message": { tf: 1 },
                                     "run.get_session_history": { tf: 1 },
+                                    "run.get_all_sessions": { tf: 1 },
+                                    "run.export_database_to_markdown": { tf: 1.4142135623730951 },
                                     "run.build_gemini_history": { tf: 1 },
                                     "run.start_chat_session": { tf: 1.4142135623730951 },
                                     "run.print_banner": { tf: 1 },
@@ -3206,7 +3512,7 @@ window.pdocSearch = (function () {
                                     "run.run_chat": { tf: 2 },
                                     "run.main": { tf: 1.4142135623730951 },
                                 },
-                                df: 11,
+                                df: 13,
                             },
                             y: { docs: { "run.run_chat": { tf: 1 }, "run.main": { tf: 1 } }, df: 2 },
                         },
@@ -3258,9 +3564,10 @@ window.pdocSearch = (function () {
                                 "run.get_connection": { tf: 1 },
                                 "run.create_session": { tf: 1 },
                                 "run.save_message": { tf: 1 },
+                                "run.export_database_to_markdown": { tf: 1 },
                                 "run.build_gemini_history": { tf: 1.4142135623730951 },
                             },
-                            df: 4,
+                            df: 5,
                             c: {
                                 docs: {},
                                 df: 0,
@@ -3388,7 +3695,50 @@ window.pdocSearch = (function () {
                                         },
                                     },
                                 },
-                                o: { docs: { "run.get_session_history": { tf: 1 } }, df: 1 },
+                                o: {
+                                    docs: { "run.get_session_history": { tf: 1 } },
+                                    df: 1,
+                                    m: {
+                                        docs: {},
+                                        df: 0,
+                                        a: {
+                                            docs: {},
+                                            df: 0,
+                                            t: {
+                                                docs: {},
+                                                df: 0,
+                                                i: {
+                                                    docs: {},
+                                                    df: 0,
+                                                    c: {
+                                                        docs: {},
+                                                        df: 0,
+                                                        a: {
+                                                            docs: {},
+                                                            df: 0,
+                                                            l: {
+                                                                docs: {},
+                                                                df: 0,
+                                                                l: {
+                                                                    docs: {},
+                                                                    df: 0,
+                                                                    y: {
+                                                                        docs: {
+                                                                            "run.export_database_to_markdown": {
+                                                                                tf: 1,
+                                                                            },
+                                                                        },
+                                                                        df: 1,
+                                                                    },
+                                                                },
+                                                            },
+                                                        },
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
                             },
                         },
                         v: {
@@ -3436,7 +3786,10 @@ window.pdocSearch = (function () {
                                     "run.main": { tf: 1 },
                                 },
                                 df: 5,
-                                s: { docs: { "run.get_session_history": { tf: 1 } }, df: 1 },
+                                s: {
+                                    docs: { "run.get_session_history": { tf: 1 }, "run.get_all_sessions": { tf: 1 } },
+                                    df: 2,
+                                },
                                 b: {
                                     docs: {},
                                     df: 0,
@@ -3541,7 +3894,21 @@ window.pdocSearch = (function () {
                             l: {
                                 docs: {},
                                 df: 0,
-                                e: { docs: { "run.load_api_key": { tf: 1 }, "run.main": { tf: 1 } }, df: 2 },
+                                e: {
+                                    docs: {
+                                        "run.load_api_key": { tf: 1 },
+                                        "run.export_database_to_markdown": { tf: 2 },
+                                        "run.run_chat": { tf: 1 },
+                                        "run.main": { tf: 1 },
+                                    },
+                                    df: 4,
+                                    s: { docs: { "run.export_database_to_markdown": { tf: 1 } }, df: 1 },
+                                },
+                            },
+                            r: {
+                                docs: {},
+                                df: 0,
+                                s: { docs: {}, df: 0, t: { docs: { "run.get_all_sessions": { tf: 1 } }, df: 1 } },
                             },
                         },
                         a: {
@@ -3613,9 +3980,10 @@ window.pdocSearch = (function () {
                                         "run.save_message": { tf: 1 },
                                         "run.start_chat_session": { tf: 1 },
                                         "run.print_history": { tf: 1 },
+                                        "run.run_chat": { tf: 1 },
                                         "run.main": { tf: 1 },
                                     },
-                                    df: 4,
+                                    df: 5,
                                 },
                             },
                         },
@@ -3625,9 +3993,10 @@ window.pdocSearch = (function () {
                             r: {
                                 docs: {
                                     "run.get_session_history": { tf: 1.7320508075688772 },
+                                    "run.get_all_sessions": { tf: 1 },
                                     "run.print_history": { tf: 1.7320508075688772 },
                                 },
-                                df: 2,
+                                df: 3,
                                 e: {
                                     docs: {},
                                     df: 0,
@@ -3649,10 +4018,12 @@ window.pdocSearch = (function () {
                                         df: 0,
                                         t: {
                                             docs: {
+                                                "run.export_database_to_markdown": { tf: 1 },
                                                 "run.build_gemini_history": { tf: 1 },
                                                 "run.start_chat_session": { tf: 1 },
                                             },
-                                            df: 2,
+                                            df: 3,
+                                            s: { docs: { "run.export_database_to_markdown": { tf: 1 } }, df: 1 },
                                             t: {
                                                 docs: {},
                                                 df: 0,
@@ -3785,11 +4156,22 @@ window.pdocSearch = (function () {
                                 i: {
                                     docs: {},
                                     df: 0,
-                                    r: { docs: {}, df: 0, e: { docs: { "run.run_chat": { tf: 1 } }, df: 1 } },
+                                    r: {
+                                        docs: {},
+                                        df: 0,
+                                        e: {
+                                            docs: {
+                                                "run.export_database_to_markdown": { tf: 1 },
+                                                "run.run_chat": { tf: 1 },
+                                            },
+                                            df: 2,
+                                        },
+                                    },
                                 },
                                 r: { docs: {}, df: 0, y: { docs: { "run.main": { tf: 1 } }, df: 1 } },
                                 e: { docs: {}, df: 0, r: { docs: { "run.main": { tf: 1 } }, df: 1 } },
                             },
+                            d: { docs: { "run.run_chat": { tf: 1 } }, df: 1 },
                         },
                         m: {
                             docs: {},
@@ -3812,9 +4194,10 @@ window.pdocSearch = (function () {
                                     t: {
                                         docs: {
                                             "run.ensure_database_directory": { tf: 1.4142135623730951 },
+                                            "run.export_database_to_markdown": { tf: 1 },
                                             "run.print_history": { tf: 1 },
                                         },
-                                        df: 2,
+                                        df: 3,
                                         s: {
                                             docs: {
                                                 "run.initialize_database": { tf: 1.4142135623730951 },
@@ -3830,7 +4213,7 @@ window.pdocSearch = (function () {
                                     },
                                 },
                                 t: {
-                                    docs: { "run.run_chat": { tf: 1.4142135623730951 } },
+                                    docs: { "run.run_chat": { tf: 1.7320508075688772 } },
                                     df: 1,
                                     s: { docs: { "run.run_chat": { tf: 1 } }, df: 1 },
                                 },
@@ -3911,6 +4294,28 @@ window.pdocSearch = (function () {
                                         },
                                     },
                                 },
+                                o: {
+                                    docs: {},
+                                    df: 0,
+                                    r: {
+                                        docs: {},
+                                        df: 0,
+                                        t: {
+                                            docs: {
+                                                "run.export_database_to_markdown": { tf: 1.4142135623730951 },
+                                                "run.run_chat": { tf: 1.4142135623730951 },
+                                            },
+                                            df: 2,
+                                            s: {
+                                                docs: {
+                                                    "run.export_database_to_markdown": { tf: 1 },
+                                                    "run.run_chat": { tf: 1 },
+                                                },
+                                                df: 2,
+                                            },
+                                        },
+                                    },
+                                },
                             },
                         },
                         v: {
@@ -3927,9 +4332,10 @@ window.pdocSearch = (function () {
                                         docs: {
                                             "run.initialize_database": { tf: 1 },
                                             "run.get_session_history": { tf: 1 },
+                                            "run.export_database_to_markdown": { tf: 1 },
                                             "run.run_chat": { tf: 1.4142135623730951 },
                                         },
-                                        df: 3,
+                                        df: 4,
                                     },
                                 },
                             },
@@ -3956,10 +4362,11 @@ window.pdocSearch = (function () {
                                 h: {
                                     docs: {
                                         "run.get_session_history": { tf: 1 },
+                                        "run.get_all_sessions": { tf: 1 },
                                         "run.build_gemini_history": { tf: 1 },
                                         "run.print_history": { tf: 1 },
                                     },
-                                    df: 3,
+                                    df: 4,
                                 },
                             },
                         },
@@ -4036,13 +4443,6 @@ window.pdocSearch = (function () {
                                     docs: { "run.load_api_key": { tf: 1 } },
                                     df: 1,
                                     s: { docs: { "run.load_api_key": { tf: 1 }, "run.run_chat": { tf: 1 } }, df: 2 },
-                                    y: {
-                                        docs: {
-                                            "run.build_gemini_history": { tf: 1 },
-                                            "run.start_chat_session": { tf: 1 },
-                                        },
-                                        df: 2,
-                                    },
                                     a: {
                                         docs: {},
                                         df: 0,
@@ -4052,9 +4452,22 @@ window.pdocSearch = (function () {
                                             l: {
                                                 docs: {},
                                                 df: 0,
-                                                e: { docs: { "run.print_history": { tf: 1 } }, df: 1 },
+                                                e: {
+                                                    docs: {
+                                                        "run.export_database_to_markdown": { tf: 1 },
+                                                        "run.print_history": { tf: 1 },
+                                                    },
+                                                    df: 2,
+                                                },
                                             },
                                         },
+                                    },
+                                    y: {
+                                        docs: {
+                                            "run.build_gemini_history": { tf: 1 },
+                                            "run.start_chat_session": { tf: 1 },
+                                        },
+                                        df: 2,
                                     },
                                 },
                             },
@@ -4074,8 +4487,11 @@ window.pdocSearch = (function () {
                                                 docs: {},
                                                 df: 0,
                                                 e: {
-                                                    docs: { "run.get_session_history": { tf: 1 } },
-                                                    df: 1,
+                                                    docs: {
+                                                        "run.get_session_history": { tf: 1 },
+                                                        "run.get_all_sessions": { tf: 1 },
+                                                    },
+                                                    df: 2,
                                                     s: {
                                                         docs: {
                                                             "run.load_api_key": { tf: 1 },
@@ -4104,10 +4520,12 @@ window.pdocSearch = (function () {
                                                     "run.get_connection": { tf: 1 },
                                                     "run.create_session": { tf: 1 },
                                                     "run.get_session_history": { tf: 1 },
+                                                    "run.get_all_sessions": { tf: 1 },
+                                                    "run.export_database_to_markdown": { tf: 1 },
                                                     "run.build_gemini_history": { tf: 1 },
                                                     "run.start_chat_session": { tf: 1 },
                                                 },
-                                                df: 6,
+                                                df: 8,
                                             },
                                             i: {
                                                 docs: {},
@@ -4132,8 +4550,8 @@ window.pdocSearch = (function () {
                                         docs: {},
                                         df: 0,
                                         t: {
-                                            docs: {},
-                                            df: 0,
+                                            docs: { "run.export_database_to_markdown": { tf: 1 } },
+                                            df: 1,
                                             s: {
                                                 docs: {
                                                     "run.get_connection": { tf: 1 },
@@ -4332,7 +4750,17 @@ window.pdocSearch = (function () {
                         o: {
                             docs: {},
                             df: 0,
-                            o: { docs: {}, df: 0, t: { docs: { "run.load_api_key": { tf: 1 } }, df: 1 } },
+                            o: {
+                                docs: {},
+                                df: 0,
+                                t: {
+                                    docs: {
+                                        "run.load_api_key": { tf: 1 },
+                                        "run.export_database_to_markdown": { tf: 1 },
+                                    },
+                                    df: 2,
+                                },
+                            },
                             w: {
                                 docs: {
                                     "run.get_connection": { tf: 1.4142135623730951 },
@@ -4392,7 +4820,17 @@ window.pdocSearch = (function () {
                                     e: {
                                         docs: {},
                                         df: 0,
-                                        c: { docs: {}, df: 0, t: { docs: { "run.load_api_key": { tf: 1 } }, df: 1 } },
+                                        c: {
+                                            docs: {},
+                                            df: 0,
+                                            t: {
+                                                docs: {
+                                                    "run.load_api_key": { tf: 1 },
+                                                    "run.export_database_to_markdown": { tf: 1 },
+                                                },
+                                                df: 2,
+                                            },
+                                        },
                                     },
                                 },
                             },
@@ -4456,9 +4894,10 @@ window.pdocSearch = (function () {
                                         docs: {
                                             "run.print_banner": { tf: 1 },
                                             "run.print_history": { tf: 1 },
+                                            "run.run_chat": { tf: 1 },
                                             "run.main": { tf: 1 },
                                         },
-                                        df: 3,
+                                        df: 4,
                                         s: {
                                             docs: { "run.print_history": { tf: 1 }, "run.run_chat": { tf: 2 } },
                                             df: 2,
@@ -4491,15 +4930,22 @@ window.pdocSearch = (function () {
                                     docs: {
                                         "run.ensure_database_directory": { tf: 1 },
                                         "run.get_connection": { tf: 1 },
+                                        "run.export_database_to_markdown": { tf: 1 },
                                     },
-                                    df: 2,
+                                    df: 3,
                                     l: {
                                         docs: {},
                                         df: 0,
                                         i: {
                                             docs: {},
                                             df: 0,
-                                            b: { docs: { "run.ensure_database_directory": { tf: 1 } }, df: 1 },
+                                            b: {
+                                                docs: {
+                                                    "run.ensure_database_directory": { tf: 1 },
+                                                    "run.export_database_to_markdown": { tf: 1 },
+                                                },
+                                                df: 2,
+                                            },
                                         },
                                     },
                                 },
@@ -4610,8 +5056,9 @@ window.pdocSearch = (function () {
                                     docs: {
                                         "run.ensure_database_directory": { tf: 1 },
                                         "run.get_connection": { tf: 1 },
+                                        "run.export_database_to_markdown": { tf: 1 },
                                     },
-                                    df: 2,
+                                    df: 3,
                                 },
                                 r: {
                                     docs: {
@@ -4712,9 +5159,10 @@ window.pdocSearch = (function () {
                                 docs: {
                                     "run.create_session": { tf: 1 },
                                     "run.save_message": { tf: 1 },
+                                    "run.export_database_to_markdown": { tf: 1 },
                                     "run.print_history": { tf: 1 },
                                 },
-                                df: 3,
+                                df: 4,
                             },
                         },
                     },
@@ -4737,8 +5185,33 @@ window.pdocSearch = (function () {
                                 docs: {},
                                 df: 0,
                                 s: {
-                                    docs: { "run.ensure_database_directory": { tf: 1 }, "run.run_chat": { tf: 1 } },
-                                    df: 2,
+                                    docs: {
+                                        "run.ensure_database_directory": { tf: 1 },
+                                        "run.export_database_to_markdown": { tf: 1 },
+                                        "run.run_chat": { tf: 1 },
+                                    },
+                                    df: 3,
+                                },
+                            },
+                            c: {
+                                docs: {},
+                                df: 0,
+                                u: {
+                                    docs: {},
+                                    df: 0,
+                                    m: {
+                                        docs: {},
+                                        df: 0,
+                                        e: {
+                                            docs: {},
+                                            df: 0,
+                                            n: {
+                                                docs: {},
+                                                df: 0,
+                                                t: { docs: { "run.export_database_to_markdown": { tf: 1 } }, df: 1 },
+                                            },
+                                        },
+                                    },
                                 },
                             },
                         },
@@ -4767,11 +5240,14 @@ window.pdocSearch = (function () {
                                                         "run.initialize_database": { tf: 1.7320508075688772 },
                                                         "run.create_session": { tf: 1 },
                                                         "run.save_message": { tf: 1 },
+                                                        "run.get_all_sessions": { tf: 1 },
+                                                        "run.export_database_to_markdown": { tf: 1 },
                                                         "run.build_gemini_history": { tf: 1 },
                                                         "run.start_chat_session": { tf: 1 },
+                                                        "run.run_chat": { tf: 1 },
                                                         "run.main": { tf: 1.4142135623730951 },
                                                     },
-                                                    df: 8,
+                                                    df: 11,
                                                 },
                                             },
                                         },
@@ -4804,8 +5280,12 @@ window.pdocSearch = (function () {
                                                         docs: {
                                                             "run.ensure_database_directory": { tf: 1 },
                                                             "run.initialize_database": { tf: 1.4142135623730951 },
+                                                            "run.export_database_to_markdown": {
+                                                                tf: 1.4142135623730951,
+                                                            },
+                                                            "run.run_chat": { tf: 1 },
                                                         },
-                                                        df: 2,
+                                                        df: 4,
                                                     },
                                                     i: {
                                                         docs: {},
@@ -4855,9 +5335,10 @@ window.pdocSearch = (function () {
                                                                 s: {
                                                                     docs: {
                                                                         "run.get_session_history": { tf: 1 },
+                                                                        "run.get_all_sessions": { tf: 1 },
                                                                         "run.build_gemini_history": { tf: 1 },
                                                                     },
-                                                                    df: 2,
+                                                                    df: 3,
                                                                 },
                                                             },
                                                         },
@@ -4949,13 +5430,15 @@ window.pdocSearch = (function () {
                                 "run.create_session": { tf: 1 },
                                 "run.save_message": { tf: 1.7320508075688772 },
                                 "run.get_session_history": { tf: 1.7320508075688772 },
+                                "run.get_all_sessions": { tf: 1 },
+                                "run.export_database_to_markdown": { tf: 1 },
                                 "run.build_gemini_history": { tf: 1.7320508075688772 },
                                 "run.start_chat_session": { tf: 1.4142135623730951 },
                                 "run.print_banner": { tf: 1 },
                                 "run.print_history": { tf: 1.4142135623730951 },
                                 "run.run_chat": { tf: 1 },
                             },
-                            df: 9,
+                            df: 11,
                         },
                         r: {
                             docs: {
@@ -4977,7 +5460,13 @@ window.pdocSearch = (function () {
                                         e: {
                                             docs: {},
                                             df: 0,
-                                            d: { docs: { "run.get_session_history": { tf: 1 } }, df: 1 },
+                                            d: {
+                                                docs: {
+                                                    "run.get_session_history": { tf: 1 },
+                                                    "run.get_all_sessions": { tf: 1.4142135623730951 },
+                                                },
+                                                df: 2,
+                                            },
                                         },
                                     },
                                 },
@@ -5043,14 +5532,54 @@ window.pdocSearch = (function () {
                                 docs: {
                                     "run.initialize_database": { tf: 1.4142135623730951 },
                                     "run.get_session_history": { tf: 1 },
+                                    "run.get_all_sessions": { tf: 1 },
                                     "run.print_history": { tf: 1 },
                                 },
-                                df: 3,
+                                df: 4,
                             },
                             c: {
                                 docs: {},
                                 df: 0,
                                 e: { docs: { "run.save_message": { tf: 1.4142135623730951 } }, df: 1 },
+                            },
+                        },
+                        l: {
+                            docs: {},
+                            df: 0,
+                            d: {
+                                docs: {},
+                                df: 0,
+                                e: {
+                                    docs: {},
+                                    df: 0,
+                                    s: { docs: {}, df: 0, t: { docs: { "run.get_all_sessions": { tf: 1 } }, df: 1 } },
+                                },
+                            },
+                        },
+                        v: {
+                            docs: {},
+                            df: 0,
+                            e: {
+                                docs: {},
+                                df: 0,
+                                r: { docs: { "run.export_database_to_markdown": { tf: 1 } }, df: 1 },
+                            },
+                        },
+                        u: {
+                            docs: {},
+                            df: 0,
+                            t: {
+                                docs: {},
+                                df: 0,
+                                p: {
+                                    docs: {},
+                                    df: 0,
+                                    u: {
+                                        docs: {},
+                                        df: 0,
+                                        t: { docs: { "run.export_database_to_markdown": { tf: 1 } }, df: 1 },
+                                    },
+                                },
                             },
                         },
                         b: {
@@ -5189,11 +5718,12 @@ window.pdocSearch = (function () {
                                         df: 0,
                                         d: {
                                             docs: {
+                                                "run.get_all_sessions": { tf: 1 },
                                                 "run.build_gemini_history": { tf: 1 },
                                                 "run.start_chat_session": { tf: 1 },
                                                 "run.print_history": { tf: 1 },
                                             },
-                                            df: 3,
+                                            df: 4,
                                         },
                                     },
                                 },
@@ -5238,14 +5768,22 @@ window.pdocSearch = (function () {
                                                     "run.create_session": { tf: 1.7320508075688772 },
                                                     "run.save_message": { tf: 1.4142135623730951 },
                                                     "run.get_session_history": { tf: 2 },
+                                                    "run.get_all_sessions": { tf: 1 },
+                                                    "run.export_database_to_markdown": { tf: 1 },
                                                     "run.build_gemini_history": { tf: 1.4142135623730951 },
                                                     "run.start_chat_session": { tf: 1.7320508075688772 },
                                                     "run.print_history": { tf: 2 },
-                                                    "run.run_chat": { tf: 2 },
+                                                    "run.run_chat": { tf: 2.449489742783178 },
                                                     "run.main": { tf: 1.4142135623730951 },
                                                 },
-                                                df: 9,
-                                                s: { docs: { "run.initialize_database": { tf: 1 } }, df: 1 },
+                                                df: 11,
+                                                s: {
+                                                    docs: {
+                                                        "run.initialize_database": { tf: 1 },
+                                                        "run.get_all_sessions": { tf: 1 },
+                                                    },
+                                                    df: 2,
+                                                },
                                             },
                                         },
                                     },
@@ -5305,10 +5843,16 @@ window.pdocSearch = (function () {
                                 "run.get_connection": { tf: 1 },
                                 "run.initialize_database": { tf: 1 },
                                 "run.get_session_history": { tf: 1 },
+                                "run.export_database_to_markdown": { tf: 1 },
                                 "run.start_chat_session": { tf: 1 },
                                 "run.run_chat": { tf: 1 },
                             },
-                            df: 6,
+                            df: 7,
+                            r: {
+                                docs: {},
+                                df: 0,
+                                t: { docs: { "run.export_database_to_markdown": { tf: 1 } }, df: 1 },
+                            },
                         },
                         a: {
                             docs: {},
@@ -5486,9 +6030,10 @@ window.pdocSearch = (function () {
                                 "run.load_api_key": { tf: 1 },
                                 "run.ensure_database_directory": { tf: 1 },
                                 "run.initialize_database": { tf: 1 },
+                                "run.export_database_to_markdown": { tf: 1 },
                                 "run.print_history": { tf: 1 },
                             },
-                            df: 4,
+                            df: 5,
                         },
                         s: {
                             docs: {
@@ -5497,29 +6042,56 @@ window.pdocSearch = (function () {
                                 "run.initialize_database": { tf: 1 },
                                 "run.save_message": { tf: 1 },
                                 "run.get_session_history": { tf: 1.4142135623730951 },
+                                "run.export_database_to_markdown": { tf: 1.4142135623730951 },
                                 "run.print_history": { tf: 1 },
                                 "run.run_chat": { tf: 1 },
                             },
-                            df: 7,
+                            df: 8,
                             o: { docs: { "run.create_session": { tf: 1 } }, df: 1 },
                         },
                         t: {
                             docs: {
                                 "run.ensure_database_directory": { tf: 1 },
+                                "run.export_database_to_markdown": { tf: 1 },
                                 "run.start_chat_session": { tf: 1.4142135623730951 },
                                 "run.run_chat": { tf: 1.4142135623730951 },
                             },
-                            df: 3,
-                            s: { docs: { "run.print_history": { tf: 1 } }, df: 1 },
+                            df: 4,
+                            e: {
+                                docs: {},
+                                df: 0,
+                                r: {
+                                    docs: {},
+                                    df: 0,
+                                    a: {
+                                        docs: {},
+                                        df: 0,
+                                        t: {
+                                            docs: {},
+                                            df: 0,
+                                            e: {
+                                                docs: {},
+                                                df: 0,
+                                                s: { docs: { "run.export_database_to_markdown": { tf: 1 } }, df: 1 },
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                            s: {
+                                docs: { "run.export_database_to_markdown": { tf: 1 }, "run.print_history": { tf: 1 } },
+                                df: 2,
+                            },
                         },
                         n: {
                             docs: {
                                 "run.create_session": { tf: 1 },
                                 "run.get_session_history": { tf: 1 },
-                                "run.run_chat": { tf: 1.4142135623730951 },
+                                "run.get_all_sessions": { tf: 1 },
+                                "run.run_chat": { tf: 2.23606797749979 },
                                 "run.main": { tf: 1 },
                             },
-                            df: 4,
+                            df: 5,
                             t: {
                                 docs: {},
                                 df: 0,
@@ -5625,6 +6197,15 @@ window.pdocSearch = (function () {
                                                 },
                                             },
                                         },
+                                    },
+                                },
+                                i: {
+                                    docs: {},
+                                    df: 0,
+                                    d: {
+                                        docs: {},
+                                        df: 0,
+                                        e: { docs: { "run.export_database_to_markdown": { tf: 1 } }, df: 1 },
                                     },
                                 },
                                 t: {
@@ -5768,12 +6349,13 @@ window.pdocSearch = (function () {
                                 "run.initialize_database": { tf: 1 },
                                 "run.save_message": { tf: 1 },
                                 "run.get_session_history": { tf: 1.4142135623730951 },
+                                "run.get_all_sessions": { tf: 1 },
                                 "run.build_gemini_history": { tf: 1 },
                                 "run.start_chat_session": { tf: 1 },
                                 "run.print_history": { tf: 1 },
                                 "run.run_chat": { tf: 1 },
                             },
-                            df: 7,
+                            df: 8,
                             e: {
                                 docs: {},
                                 df: 0,
@@ -5842,9 +6424,10 @@ window.pdocSearch = (function () {
                                     "run.load_api_key": { tf: 1 },
                                     "run.ensure_database_directory": { tf: 1 },
                                     "run.initialize_database": { tf: 1 },
+                                    "run.export_database_to_markdown": { tf: 1 },
                                     "run.run_chat": { tf: 1 },
                                 },
-                                df: 4,
+                                df: 5,
                                 i: {
                                     docs: {},
                                     df: 0,
@@ -5855,7 +6438,18 @@ window.pdocSearch = (function () {
                         a: {
                             docs: {},
                             df: 0,
-                            m: { docs: {}, df: 0, e: { docs: { "run.get_connection": { tf: 1 } }, df: 1 } },
+                            m: {
+                                docs: {},
+                                df: 0,
+                                e: {
+                                    docs: {
+                                        "run.get_connection": { tf: 1 },
+                                        "run.export_database_to_markdown": { tf: 1 },
+                                    },
+                                    df: 2,
+                                    d: { docs: { "run.export_database_to_markdown": { tf: 1 } }, df: 1 },
+                                },
+                            },
                         },
                         e: {
                             docs: {},
@@ -5940,8 +6534,10 @@ window.pdocSearch = (function () {
                                                     "run.initialize_database": { tf: 1 },
                                                     "run.create_session": { tf: 1 },
                                                     "run.get_session_history": { tf: 1 },
+                                                    "run.get_all_sessions": { tf: 1 },
+                                                    "run.export_database_to_markdown": { tf: 1 },
                                                 },
-                                                df: 3,
+                                                df: 5,
                                             },
                                         },
                                         i: {
@@ -5959,8 +6555,9 @@ window.pdocSearch = (function () {
                                                     docs: {
                                                         "run.create_session": { tf: 1 },
                                                         "run.save_message": { tf: 1 },
+                                                        "run.get_all_sessions": { tf: 1 },
                                                     },
-                                                    df: 2,
+                                                    df: 3,
                                                 },
                                             },
                                         },
@@ -6059,7 +6656,13 @@ window.pdocSearch = (function () {
                                                     n: {
                                                         docs: {},
                                                         df: 0,
-                                                        g: { docs: { "run.get_session_history": { tf: 1 } }, df: 1 },
+                                                        g: {
+                                                            docs: {
+                                                                "run.get_session_history": { tf: 1 },
+                                                                "run.get_all_sessions": { tf: 1 },
+                                                            },
+                                                            df: 2,
+                                                        },
                                                     },
                                                 },
                                             },
@@ -6188,7 +6791,10 @@ window.pdocSearch = (function () {
                                                 docs: {},
                                                 df: 0,
                                                 s: {
-                                                    docs: { "run.print_banner": { tf: 1 }, "run.run_chat": { tf: 1 } },
+                                                    docs: {
+                                                        "run.print_banner": { tf: 1 },
+                                                        "run.run_chat": { tf: 1.4142135623730951 },
+                                                    },
                                                     df: 2,
                                                 },
                                             },
@@ -6208,11 +6814,12 @@ window.pdocSearch = (function () {
                                         "run.initialize_database": { tf: 1 },
                                         "run.create_session": { tf: 1 },
                                         "run.save_message": { tf: 1 },
+                                        "run.export_database_to_markdown": { tf: 1 },
                                         "run.start_chat_session": { tf: 1.7320508075688772 },
                                         "run.run_chat": { tf: 1.7320508075688772 },
                                         "run.main": { tf: 1.4142135623730951 },
                                     },
-                                    df: 6,
+                                    df: 7,
                                     s: {
                                         docs: {
                                             "run.build_gemini_history": { tf: 1 },
@@ -6220,6 +6827,62 @@ window.pdocSearch = (function () {
                                             "run.run_chat": { tf: 1 },
                                         },
                                         df: 3,
+                                    },
+                                },
+                            },
+                            r: {
+                                docs: {},
+                                df: 0,
+                                o: {
+                                    docs: {},
+                                    df: 0,
+                                    n: {
+                                        docs: {},
+                                        df: 0,
+                                        o: {
+                                            docs: {},
+                                            df: 0,
+                                            l: {
+                                                docs: {},
+                                                df: 0,
+                                                o: {
+                                                    docs: {},
+                                                    df: 0,
+                                                    g: {
+                                                        docs: {},
+                                                        df: 0,
+                                                        i: {
+                                                            docs: {},
+                                                            df: 0,
+                                                            c: {
+                                                                docs: {},
+                                                                df: 0,
+                                                                a: {
+                                                                    docs: {},
+                                                                    df: 0,
+                                                                    l: {
+                                                                        docs: {},
+                                                                        df: 0,
+                                                                        l: {
+                                                                            docs: {},
+                                                                            df: 0,
+                                                                            y: {
+                                                                                docs: {
+                                                                                    "run.export_database_to_markdown": {
+                                                                                        tf: 1,
+                                                                                    },
+                                                                                },
+                                                                                df: 1,
+                                                                            },
+                                                                        },
+                                                                    },
+                                                                },
+                                                            },
+                                                        },
+                                                    },
+                                                },
+                                            },
+                                        },
                                     },
                                 },
                             },
@@ -6243,7 +6906,7 @@ window.pdocSearch = (function () {
                                                 docs: {
                                                     "run.save_message": { tf: 1 },
                                                     "run.print_history": { tf: 1 },
-                                                    "run.run_chat": { tf: 1 },
+                                                    "run.run_chat": { tf: 1.4142135623730951 },
                                                 },
                                                 df: 3,
                                             },
@@ -6362,6 +7025,33 @@ window.pdocSearch = (function () {
                                     },
                                 },
                             },
+                            r: {
+                                docs: {},
+                                df: 0,
+                                k: {
+                                    docs: {},
+                                    df: 0,
+                                    d: {
+                                        docs: {},
+                                        df: 0,
+                                        o: {
+                                            docs: {},
+                                            df: 0,
+                                            w: {
+                                                docs: {},
+                                                df: 0,
+                                                n: {
+                                                    docs: {
+                                                        "run.export_database_to_markdown": { tf: 1.7320508075688772 },
+                                                        "run.run_chat": { tf: 1 },
+                                                    },
+                                                    df: 2,
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
+                            },
                         },
                         u: {
                             docs: {},
@@ -6439,12 +7129,13 @@ window.pdocSearch = (function () {
                                                         "run.initialize_database": { tf: 1 },
                                                         "run.save_message": { tf: 1 },
                                                         "run.get_session_history": { tf: 1.4142135623730951 },
+                                                        "run.export_database_to_markdown": { tf: 1 },
                                                         "run.build_gemini_history": { tf: 1 },
                                                         "run.start_chat_session": { tf: 1 },
                                                         "run.print_history": { tf: 1.7320508075688772 },
-                                                        "run.run_chat": { tf: 1 },
+                                                        "run.run_chat": { tf: 1.4142135623730951 },
                                                     },
-                                                    df: 7,
+                                                    df: 8,
                                                 },
                                             },
                                         },
@@ -6474,6 +7165,7 @@ window.pdocSearch = (function () {
                                 },
                             },
                         },
+                        d: { docs: { "run.export_database_to_markdown": { tf: 1 } }, df: 1 },
                     },
                     w: {
                         docs: {},
@@ -6534,7 +7226,17 @@ window.pdocSearch = (function () {
                                     },
                                     df: 4,
                                 },
-                                r: { docs: {}, df: 0, e: { docs: { "run.build_gemini_history": { tf: 1 } }, df: 1 } },
+                                r: {
+                                    docs: {},
+                                    df: 0,
+                                    e: {
+                                        docs: {
+                                            "run.export_database_to_markdown": { tf: 1 },
+                                            "run.build_gemini_history": { tf: 1 },
+                                        },
+                                        df: 2,
+                                    },
+                                },
                             },
                             o: {
                                 docs: {},
@@ -6550,6 +7252,23 @@ window.pdocSearch = (function () {
                                             "run.print_history": { tf: 1 },
                                         },
                                         df: 4,
+                                    },
+                                },
+                            },
+                        },
+                        r: {
+                            docs: {},
+                            df: 0,
+                            i: {
+                                docs: {},
+                                df: 0,
+                                t: {
+                                    docs: {},
+                                    df: 0,
+                                    e: {
+                                        docs: {},
+                                        df: 0,
+                                        s: { docs: { "run.export_database_to_markdown": { tf: 1 } }, df: 1 },
                                     },
                                 },
                             },
@@ -6603,7 +7322,7 @@ window.pdocSearch = (function () {
                                     },
                                 },
                             },
-                            i: { docs: {}, df: 0, t: { docs: { "run.run_chat": { tf: 1.4142135623730951 } }, df: 1 } },
+                            i: { docs: {}, df: 0, t: { docs: { "run.run_chat": { tf: 1.7320508075688772 } }, df: 1 } },
                             o: {
                                 docs: {},
                                 df: 0,
@@ -6675,9 +7394,11 @@ window.pdocSearch = (function () {
                                 "run.initialize_database": { tf: 1 },
                                 "run.save_message": { tf: 1 },
                                 "run.get_session_history": { tf: 1 },
+                                "run.get_all_sessions": { tf: 1 },
+                                "run.export_database_to_markdown": { tf: 1 },
                                 "run.build_gemini_history": { tf: 1 },
                             },
-                            df: 5,
+                            df: 7,
                         },
                         a: {
                             docs: {},
@@ -6702,7 +7423,11 @@ window.pdocSearch = (function () {
                             i: {
                                 docs: {},
                                 df: 0,
-                                l: { docs: {}, df: 0, t: { docs: { "run.run_chat": { tf: 1 } }, df: 1 } },
+                                l: {
+                                    docs: {},
+                                    df: 0,
+                                    t: { docs: { "run.run_chat": { tf: 1.4142135623730951 } }, df: 1 },
+                                },
                             },
                         },
                     },
@@ -6730,12 +7455,29 @@ window.pdocSearch = (function () {
                                                     "run.build_gemini_history": { tf: 2 },
                                                     "run.start_chat_session": { tf: 1.7320508075688772 },
                                                     "run.print_history": { tf: 1.4142135623730951 },
-                                                    "run.run_chat": { tf: 1 },
+                                                    "run.run_chat": { tf: 1.4142135623730951 },
                                                     "run.main": { tf: 1 },
                                                 },
                                                 df: 6,
                                             },
                                         },
+                                    },
+                                },
+                            },
+                        },
+                        h: {
+                            docs: {},
+                            df: 0,
+                            m: {
+                                docs: {},
+                                df: 0,
+                                m: {
+                                    docs: {},
+                                    df: 0,
+                                    s: {
+                                        docs: {},
+                                        df: 0,
+                                        s: { docs: { "run.export_database_to_markdown": { tf: 1 } }, df: 1 },
                                     },
                                 },
                             },
@@ -6784,6 +7526,31 @@ window.pdocSearch = (function () {
                     y: {
                         docs: {},
                         df: 0,
+                        y: {
+                            docs: {},
+                            df: 0,
+                            y: {
+                                docs: {},
+                                df: 0,
+                                y: {
+                                    docs: {},
+                                    df: 0,
+                                    m: {
+                                        docs: {},
+                                        df: 0,
+                                        m: {
+                                            docs: {},
+                                            df: 0,
+                                            d: {
+                                                docs: {},
+                                                df: 0,
+                                                d: { docs: { "run.export_database_to_markdown": { tf: 1 } }, df: 1 },
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        },
                         o: { docs: {}, df: 0, u: { docs: { "run.print_history": { tf: 1 } }, df: 1 } },
                         e: { docs: {}, df: 0, t: { docs: { "run.print_history": { tf: 1 } }, df: 1 } },
                     },
